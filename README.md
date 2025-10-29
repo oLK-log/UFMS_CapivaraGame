@@ -7,7 +7,7 @@
 * **Desenvolvedores:**
     - @Klevinryanr - Klevin Ryan Ramalho Matos
     - @oLK-log - Lorran Kaíque Silveira Fernandes
-    - @sergio.lamarque - Sergio Lamarque
+    - @sergio.lamarque - Sergio Henrique Lamarque Silva
 * **Ferramentas:**
   - [![draw.io](https://img.shields.io/badge/draw.io-F08705?style=for-the-badge&logo=diagramsdotnet&logoColor=white)](https://www.draw.io/)
   - [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/) 
