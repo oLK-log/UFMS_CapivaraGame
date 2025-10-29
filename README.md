@@ -11,7 +11,7 @@
   - PostgreSQL;
  
 ### Descrição:
-  Este trabalho prático da disciplina de Laboratório de Banco de Dados consiste na modelagem, projeto e construção de um banco de dados relacional, por meio do desenvolvimento do um banco de dados de um sistema Online chamado de Capivara Game. Esse sistema terá como primeiro jogo o **'Dominó'** .
+  Este trabalho prático da disciplina de Laboratório de Banco de Dados consiste na modelagem, projeto e construção de um banco de dados relacional, por meio do desenvolvimento de um banco de dados do sistema Online chamado de Capivara Game. Esse sistema terá como primeiro jogo o **'Dominó'** .
   #### Regras do Dominó:
   - Peças - 28 peças com lados variando de 0 a 6;
   - Distribuição - 7 peças para cada participante;
