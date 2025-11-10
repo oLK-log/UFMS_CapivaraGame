@@ -1,17 +1,34 @@
 package org.example;
+import dao.JogoDAO;
+import modeloTabelas.Jogo;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        String url = "jdbc:postgresql://localhost:5454/capivaragame";//meninos, pra voces provavelmente a porta será 5432- por problemas locais a minha é diferente
+        String usuario = "postgres";
+        String senha = "minhasenha";
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        System.out.println("Conectando ao banco de dados...");
+
+        try(Connection conexao = DriverManager.getConnection(url, usuario, senha)){
+            System.out.println("Conexão estabelecida!");
+
+            JogoDAO jogoDAO = new JogoDAO();
+            System.out.println("Criação de novo Jogo...");
+            Jogo novoJogo = jogoDAO.criarJogo(conexao);
+
+            if(novoJogo!=null){
+                System.out.println("\n Jogo criado com sucesso!");
+                System.out.println("Detalhes do jogo:"+ novoJogo);
+            }else{
+                System.out.println("ERRO: retornou NULL");
+            }
+        } catch(SQLException e){
+            System.out.println("Falha no banco de dados");
+            e.printStackTrace();
         }
     }
 }
