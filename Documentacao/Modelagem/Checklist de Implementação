@@ -1,0 +1,70 @@
+# CapivaraGame - Checklist de Funcionalidades
+
+Este checklist lista todas as funcionalidades do jogo **CapivaraGame**, separando responsabilidades entre **Java** e **Banco de Dados**.
+
+**Legenda:**  
+🟢 **Java** – Implementação na aplicação  
+🔵 **Banco** – Implementação no banco (gatilhos, funções, procedimentos, views)
+
+---
+
+## Jogo
+- 🟢 Criar novo jogo
+- 🟢 Monitorar progresso do jogo (soma das partidas até 50 pontos)
+- 🟢 + 🔵 Finalizar jogo automaticamente ao atingir pontuação máxima
+- 🟢 + 🔵 Listar todos os jogos de um usuário
+
+## Partida
+- 🟢 Iniciar nova partida dentro de um jogo
+- 🟢 Associar jogadores à partida
+- 🟢 + 🔵 Encerrar partida e registrar vencedor
+- 🟢 + 🔵 Registrar histórico completo da partida
+- 🔵 Detectar se partida está “trancada”
+
+## Jogadores
+- 🟢 Cadastrar jogadores
+- 🟢 + 🔵 Atualizar e exibir pontuação
+- 🟢 Controlar ordem de jogada (turnos)
+- 🟢 Simular decisões do jogador (IA simples)
+
+## Duplas
+- 🟢 Criar duplas de jogadores
+- 🟢 + 🔵 Gerenciar pontuação conjunta
+- 🔵 Listar vitórias e pontuação da dupla
+
+## Peças e Monte
+- 🟢 Criar todas as peças do dominó
+- 🟢 Distribuir peças aos jogadores
+- 🔵 + 🟢 Implementar compra de peças do monte
+- 🟢 + 🔵 Atualizar estado do monte
+- 🔵 Validar disponibilidade de peças
+
+## Jogadas
+- 🟢 + 🔵 Registrar jogadas (ordem, ação, peça, lado)
+- 🔵 + 🟢 Validar jogadas de acordo com regras
+- 🔵 Atualizar pontuação automaticamente ao bater/fechar
+- 🟢 Controlar sequência de turnos
+- 🟢 Simular jogadas de todos os jogadores
+
+## Regras de Negócio
+- 🔵 Calcular pontos automaticamente ao bater/fechar
+- 🔵 Procedimentos para comprar peça e validar jogada
+- 🔵 Funções para verificar jogadas possíveis e detectar jogo trancado
+- 🔵 Visões: ranking por jogador e listagem de partidas com vencedores
+
+## Histórico e Estatísticas
+- 🔵 Armazenar histórico completo de movimentos de todos os jogadores
+- 🔵 + 🟢 Ranking de jogadores (pontuação total, partidas e jogos vencidos)
+- 🔵 Estatísticas de duplas
+- 🔵 Listar partidas por jogo com vencedor e pontuação final
+
+## Simulação Automatizada
+- 🟢 Simular partidas completas automaticamente
+- 🟢 Distribuir peças aleatoriamente
+- 🟢 Simular decisões estratégicas (jogar, comprar ou passar)
+- 🟢 + 🔵 Registrar jogadas no banco
+
+## Relatórios e Visualizações
+- 🟢 + 🔵 Ranking geral de jogadores e duplas
+- 🟢 + 🔵 Histórico de partidas e jogos
+- 🟢 + 🔵 Detalhamento de jogadas de cada partida
