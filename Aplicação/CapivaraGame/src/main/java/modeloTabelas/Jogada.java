@@ -2,6 +2,12 @@ package modeloTabelas;
 
 public class Jogada {
 
+    //criando constantes para melhorar a legibilidade do codigo
+    public static int jogarAcao = 1;
+    public static int comprarAcao = 2;
+    public static int passarAcao = 3;
+    public static int distribuirAcao = 4;
+
     private int idJogada;
     private int ordem;
     private int idPartida;
@@ -77,3 +83,7 @@ public class Jogada {
                 ", ladoUsado=" + ladoUtilizado;
     }
 }
+/*Details:
+Programmer: Sergio
+Date: 18/11 (first version)
+ */

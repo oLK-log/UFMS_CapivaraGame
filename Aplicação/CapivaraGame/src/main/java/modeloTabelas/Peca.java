@@ -37,3 +37,8 @@ public class Peca {
         return "Peça id= " + idPeca + " [" + valorLado1 + "|" + valorLado2 + "]";
     }
 }
+
+/*Details:
+Programmer: Sergio
+Date: 18/11 (first version)
+ */

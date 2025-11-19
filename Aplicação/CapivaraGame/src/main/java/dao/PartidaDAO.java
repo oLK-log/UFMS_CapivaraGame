@@ -18,3 +18,7 @@ public class PartidaDAO{
         return null;
     }
 }
+/*Details:
+Programmer: Lorran
+Date: 10/11 (first version)
+ */
