@@ -55,3 +55,7 @@ public class Jogador {
         return "Jogador id "+ idJogador + " pos "+ posicao + " pontuacao = "+ pontuacao;
     }
 }
+/*Details:
+Programmer: Lorran
+Date: 09/11 (first version)
+ */

@@ -2,6 +2,12 @@ package modeloTabelas;
 
 public class Jogada {
 
+    //criando constantes para melhorar a legibilidade do codigo
+    public static int jogarAcao = 1;
+    public static int comprarAcao = 2;
+    public static int passarAcao = 3;
+    public static int distribuirAcao = 4;
+
     private int idJogada;
     private int ordem;
     private int idPartida;
@@ -9,6 +15,7 @@ public class Jogada {
     private int acao; // 1=Jogou, 2=Comprou, 3=Passou, 4=Distribuiu
     private Integer idPeca; // pode ser null quando passa a vez
     private Integer ladoUtilizado; // pode ser null se não jogou peça
+
 
     public Jogada(int idJogada, int ordem, int idPartida, int idJogador, int acao, Integer idPeca, Integer ladoUtilizado){
         this.idJogada = idJogada;
@@ -77,3 +84,7 @@ public class Jogada {
                 ", ladoUsado=" + ladoUtilizado;
     }
 }
+/*Details:
+Programmer: Sergio
+Date: 18/11 (first version)
+ */

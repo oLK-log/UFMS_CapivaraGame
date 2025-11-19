@@ -19,3 +19,7 @@ public class Jogo {
         return "Id" + idJogo;
     }
 }
+/*Details:
+Programmer: Lorran
+Date: 09/11 (first version)
+ */

@@ -107,3 +107,7 @@ public class Main {
         }
     }
 }
+/*Details:
+Programmer: Lorran
+Date: 09/11 (first version)
+ */
