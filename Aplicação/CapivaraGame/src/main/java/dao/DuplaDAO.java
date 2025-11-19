@@ -7,8 +7,8 @@ public class DuplaDAO {
     public Dupla criarDupla(Connection conexao, Dupla dupla) throws SQLException {
         String inserirDupla = "Insert into domino.dupla (idJogador1, idJogador2) VALUES (?, ?) RETURNING idDupla";
 
-        try(PreparedStatment stmt = conexao.prepareStatement(inserirDupla)){
-            stmt.setInt(1, dupla.getIdJogador1());
+        try(PreparedStatement stmt = conexao.prepareStatement(inserirDupla)){
+            stmt.setInt(1, dupla.getIdJoagador1());
             stmt.setInt(2, dupla.getGetIdJoagador2());
 
             ResultSet rs = stmt.executeQuery();
