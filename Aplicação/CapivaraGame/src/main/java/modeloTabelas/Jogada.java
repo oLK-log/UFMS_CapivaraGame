@@ -16,7 +16,6 @@ public class Jogada {
     private Integer idPeca; // pode ser null quando passa a vez
     private Integer ladoUtilizado; // pode ser null se não jogou peça
 
-
     public Jogada(int idJogada, int ordem, int idPartida, int idJogador, int acao, Integer idPeca, Integer ladoUtilizado){
         this.idJogada = idJogada;
         this.ordem = ordem;
