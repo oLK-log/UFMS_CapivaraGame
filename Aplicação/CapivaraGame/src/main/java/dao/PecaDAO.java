@@ -2,6 +2,8 @@ package dao;
 
 import modeloTabelas.Peca;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PecaDAO {
     public Peca criarPeca(Connection conexao, Peca peca) throws SQLException {
@@ -45,7 +47,19 @@ public class PecaDAO {
     }
 
     //Sergio, outro detalhe eh que a cada partida precisamos embaralhar as pecas
-    //acho interessante ja fazer isso como um metodo da propra classe
+    //acho interessante ja fazer isso como um metodo da propra classe pra ja pegar as pecas para embaralhar
+    public List<Peca> listarTodasPecas(Connection conexao) throws SQLException {
+        List<Peca> listaDePecas = new ArrayList<>();
+        String selecionaTodasPecas = "SELECT * FROM domino.peca";
+
+        try(Statement stmt = conexao.createStatement();ResultSet rs = stmt.executeQuery(selecionaTodasPecas)) {
+            while(rs.next()){
+                Peca peca = new Peca(rs.getInt("IdPeca"), rs.getInt("valorLado1"), rs.getInt("valorLado2"));
+                listaDePecas.add(peca);
+            }
+        }
+        return listaDePecas;
+    }
 }
 /*Details:
 Programmer: Sergio
