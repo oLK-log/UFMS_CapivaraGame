@@ -2,14 +2,26 @@ package org.example;
 import dao.JogadorDAO;
 import dao.JogoDAO;
 import dao.PartidaDAO;
+import dao.PecaDAO;
+import dao.DuplaDAO;
+import dao.MonteDAO;
+import dao.JogadaDAO;
+
 import modeloTabelas.Jogador;
 import modeloTabelas.Jogo;
 import modeloTabelas.Partida;
+import modeloTabelas.Peca;
+import modeloTabelas.Dupla;
+import modeloTabelas.Monte;
+import modeloTabelas.Jogada;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,20 +39,23 @@ public class Main {
             System.out.println("                             Conexão estabelecida!");
             Scanner input = new Scanner(System.in);
             JogoDAO jogoDAO = new JogoDAO();
-            System.out.println("                         Criação de novo Jogo Feita ...");
-            System.out.println("----------------------------------------------------------------------------------");
             Jogo novoJogo = jogoDAO.criarJogo(conexao);
-
-
             //verificarSeCriou(novoJogo, "Jogo");
             verificarSeCriouUsandoGenerico(novoJogo, "Jogo");
-
+            System.out.println("                         Criação de novo Jogo Feita ...");
             //iniciando criacao dos jogadores
-            criarJogadores(conexao, input, novoJogo);
+            List<Jogador> listaDeJogadores = new ArrayList<>();
+            listaDeJogadores = criarJogadores(conexao, input, novoJogo);
             System.out.println("\n                          Jogadores criados com sucesso!\n");
 
             // primeiro estou fazendo o geralzao e depois vou implementar a lógica de iniciar jogo / escolher quantos jogadores
+            //Pecas
+            PecaDAO pecaDAO = new PecaDAO();
+            pecaDAO.inicializarPecas(conexao);
+            List<Peca> listaDePecas = pecaDAO.listarTodasPecas(conexao);
+            System.out.println("\n                        " + listaDePecas.size() + " Pecas criadas com sucesso!\n");
 
+            System.out.println("----------------------------------------------------------------------------------");
             //Partidas
             //antes de iniciar a partida ou na primeira partida teriamos que distribuir as cartas?
             System.out.println("Iniciando partidas");
@@ -49,7 +64,27 @@ public class Main {
             partidaDAO.criarPartida(conexao, novaPartida);
 
             if(verificarSeCriouUsandoGenerico(novaPartida, "Partida 1")){
-                System.out.println("Distribuindo peças...");
+                MonteDAO monteDAO = new MonteDAO();
+                Monte novoMonte = new Monte(novaPartida.getIdPartida());
+                monteDAO.criarMonte(conexao, novoMonte);
+                System.out.println("\n                          Embaralhando e distribuindo!\n");
+                Collections.shuffle(listaDePecas);
+                //primeira jogada(ou a 0) onde é distribuido
+                JogadaDAO jogadaDAO = new JogadaDAO();
+                int indicePeca = 0;
+                System.out.println("\n                          Distribuindo 7 pecas para cada jogador!\n");
+                for(Jogador jogador : listaDeJogadores){
+                    for(int k=0; k<7; k++){
+                        Peca pecaUsada = listaDePecas.get(indicePeca);
+                        //È preciso salvar o registro
+                        Jogada distribuicao = new Jogada(0, novaPartida.getIdPartida(), jogador.getIdJogador(), 4, pecaUsada.getIdPeca(), null);
+                        jogadaDAO.criarJogada(conexao, distribuicao);
+                        indicePeca++;
+                    }
+                }
+
+
+                System.out.println("                          Pecas distribuidas\n                          Pecas restantes no Monte: "+ (listaDePecas.size() - indicePeca));
             }
 
         } catch(SQLException e){
@@ -57,7 +92,8 @@ public class Main {
             e.printStackTrace();
         }
     }
-    public static void criarJogadores(Connection conexao, Scanner input, Jogo novoJogo) throws SQLException{
+    public static List<Jogador> criarJogadores(Connection conexao, Scanner input, Jogo novoJogo) throws SQLException{
+        List<Jogador> listaDeJogadores = new ArrayList<>();
         int quantidadeJogadores = 0;
         while(quantidadeJogadores < 2 || quantidadeJogadores >4){
             System.out.println("Digite a quantidade de Jogadores: ");
@@ -82,7 +118,9 @@ public class Main {
             Jogador objetoJogador = new Jogador(i, novoJogo.getIdJogo());
             Jogador novoJogador = jogadorDAO.criarJogador(conexao, objetoJogador);
             verificarSeCriouUsandoGenerico(novoJogador, "Jogador" + i);
+            listaDeJogadores.add(novoJogador);
         }
+        return listaDeJogadores;
     }
     //usando a objecti
     public static void verificarSeCriou(Object objeto, String nomeTipo){

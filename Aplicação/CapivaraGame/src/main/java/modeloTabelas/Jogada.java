@@ -16,6 +16,8 @@ public class Jogada {
     private Integer idPeca; // pode ser null quando passa a vez
     private Integer ladoUtilizado; // pode ser null se não jogou peça
 
+    public Jogada(){};
+
     public Jogada(int idJogada, int ordem, int idPartida, int idJogador, int acao, Integer idPeca, Integer ladoUtilizado){
         this.idJogada = idJogada;
         this.ordem = ordem;
@@ -70,6 +72,23 @@ public class Jogada {
 
     public Integer getLadoUtilizado() {
         return ladoUtilizado;
+    }
+
+    //add settes que faltam(att Lorran)
+    public void setLadoUtilizado(Integer ladoUtilizado) {
+        this.ladoUtilizado = ladoUtilizado;
+    }
+    public void setIdPeca(Integer idPeca) {
+        this.idPeca = idPeca;
+    }
+    public void setAcao(int acao) {
+        this.acao = acao;
+    }
+    public void setIdJogador(int idJogador) {
+        this.idJogador = idJogador;
+    }
+    public void setIdPartida(int idPartida) {
+        this.idPartida = idPartida;
     }
 
     @Override

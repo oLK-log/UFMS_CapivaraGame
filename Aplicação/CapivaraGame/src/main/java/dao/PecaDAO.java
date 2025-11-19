@@ -38,7 +38,7 @@ public class PecaDAO {
         }
         System.out.println("Adicionando valor as peças, tenha paciência...");
         for(int i=0; i<=6; i++){
-            for(int j=0; j<=6; j++){
+            for(int j=i; j<=6; j++){
                 Peca novaPeca = new Peca(i, j);
                 criarPeca(conexao, novaPeca);
             }
