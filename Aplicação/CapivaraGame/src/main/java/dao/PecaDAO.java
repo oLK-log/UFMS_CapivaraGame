@@ -23,8 +23,34 @@ public class PecaDAO {
 
         return null;
     }
+
+    //Sergio, do modo que você fez, era criada apenas uma peça
+    //Meu pensamento foi de já deixar as pecasd criadas no inicioa do JOGO e apenas irmos usando elas
+    public void inicializarPecas(Connection conexao) throws SQLException {
+        System.out.println("Criando Peças...");
+        String sqlVerificaSeExistePecaCriada = "SELECT COUNT(*) FROM domino.peca";
+        try (Statement stmt = conexao.createStatement() ; ResultSet rs = stmt.executeQuery(sqlVerificaSeExistePecaCriada)) {
+            if(rs.next() && rs.getInt(1)>0) {
+                return;
+            }
+        }
+        System.out.println("Adicionando valor as peças, tenha paciência...");
+        for(int i=0; i<=6; i++){
+            for(int j=0; j<=6; j++){
+                Peca novaPeca = new Peca(i, j);
+                criarPeca(conexao, novaPeca);
+            }
+        }
+        System.out.println("As peças foram criadas com sucesso!");
+    }
+
+    //Sergio, outro detalhe eh que a cada partida precisamos embaralhar as pecas
+    //acho interessante ja fazer isso como um metodo da propra classe
 }
 /*Details:
 Programmer: Sergio
 Date: 18/11 (first version)
+- Second version
+Lorran
+date: 18/11
  */
