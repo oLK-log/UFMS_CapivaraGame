@@ -48,6 +48,25 @@ public class Main {
             listaDeJogadores = criarJogadores(conexao, input, novoJogo);
             System.out.println("\n                          Jogadores criados com sucesso!\n");
 
+            //Lógica de formar duplas
+            if(listaDeJogadores.size() == 4){
+                System.out.println("----------------------------------------------------------------------------------");
+                System.out.println("                               Formando Duplas...");
+
+                DuplaDAO duplaDAO = new DuplaDAO();
+                Jogador p1 = listaDeJogadores.get(0);
+                Jogador p2 = listaDeJogadores.get(1);
+                Jogador p3 = listaDeJogadores.get(2);
+                Jogador p4 = listaDeJogadores.get(3);
+                Dupla dupla1 = new Dupla(p1.getIdJogador(), p3.getIdJogador());
+                duplaDAO.criarDupla(conexao, dupla1);
+                System.out.println("Dupla formada: Jogador " + p1.getIdJogador() + " e Jogador " + p3.getIdJogador());
+                Dupla dupla2 = new Dupla(p2.getIdJogador(), p4.getIdJogador());
+                duplaDAO.criarDupla(conexao, dupla2);
+                System.out.println("Dupla formada: Jogador " + p2.getIdJogador() + " e Jogador " + p4.getIdJogador());
+                System.out.println("----------------------------------------------------------------------------------");
+            }
+
             // primeiro estou fazendo o geralzao e depois vou implementar a lógica de iniciar jogo / escolher quantos jogadores
             //Pecas
             PecaDAO pecaDAO = new PecaDAO();
