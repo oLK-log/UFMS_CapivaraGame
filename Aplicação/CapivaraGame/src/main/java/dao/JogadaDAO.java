@@ -1,5 +1,4 @@
 package dao;
-
 import modeloTabelas.Jogada;
 import java.sql.*;
 
@@ -37,3 +36,7 @@ public class JogadaDAO {
         return null;
     }
 }
+/*Details:
+Programmer: Sergio
+Date: 18/11 (first version)
+ */

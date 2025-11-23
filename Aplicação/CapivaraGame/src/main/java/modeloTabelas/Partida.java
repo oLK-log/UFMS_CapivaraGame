@@ -43,6 +43,10 @@ public class Partida {
 
     @Override
     public String toString(){
-        return "Partida id= "+ idPartida + ", do Jogo id= "+ idJogo ;
+        return "Partida id= "+ idPartida + ", Jogo id= "+ idJogo ;
     }
 }
+/*Details:
+Programmer: Lorran
+Date: 10/11 (first version)
+ */
