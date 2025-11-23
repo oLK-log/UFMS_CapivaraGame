@@ -1,151 +1,191 @@
 package org.example;
-import dao.JogadorDAO;
-import dao.JogoDAO;
-import dao.PartidaDAO;
-import dao.PecaDAO;
-import dao.DuplaDAO;
-import dao.MonteDAO;
-import dao.JogadaDAO;
 
-import modeloTabelas.Jogador;
-import modeloTabelas.Jogo;
-import modeloTabelas.Partida;
-import modeloTabelas.Peca;
-import modeloTabelas.Dupla;
-import modeloTabelas.Monte;
-import modeloTabelas.Jogada;
+import dao.*;
+import modeloTabelas.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Collections;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("----------------------------------------------------------------------------------");
-        System.out.println("--------------------------Seja bem Vindo ao CapivaraGame--------------------------");
-        System.out.println("                           Você escolheu o Jogo DOMINÓ.");
-        String url = "jdbc:postgresql://localhost:5454/capivaragame";//meninos, pra voces provavelmente a porta será 5432- por problemas locais a minha é diferente
-        String usuario = "postgres";//verifiquem se no de vcs eh a mesma
-        String senha = "minhasenha";//verifiquem se no de vcs eh a mesma
-        System.out.println("----------------------------------------------------------------------------------");
-        System.out.println("                                Iniciando Jogo");
-        System.out.println("                         Conectando ao banco de dados...");
 
-        try(Connection conexao = DriverManager.getConnection(url, usuario, senha)){
-            System.out.println("                             Conexão estabelecida!");
+    public static void main(String[] args) {
+
+        System.out.println("-----------------------------------------------------------");
+        System.out.println("------------------- CAPIVARAGAME - DOMINÓ ------------------");
+        System.out.println("-----------------------------------------------------------");
+
+        String url = "jdbc:postgresql://localhost:5454/capivaragame";
+        String usuario = "postgres";
+        String senha = "minhasenha";
+
+        try (Connection conexao = DriverManager.getConnection(url, usuario, senha)) {
+            System.out.println("Conectado ao banco!");
+
             Scanner input = new Scanner(System.in);
             JogoDAO jogoDAO = new JogoDAO();
-            Jogo novoJogo = jogoDAO.criarJogo(conexao);
-            //verificarSeCriou(novoJogo, "Jogo");
-            verificarSeCriouUsandoGenerico(novoJogo, "Jogo");
-            System.out.println("                         Criação de novo Jogo Feita ...");
-            //iniciando criacao dos jogadores
-            List<Jogador> listaDeJogadores = new ArrayList<>();
-            listaDeJogadores = criarJogadores(conexao, input, novoJogo);
-            System.out.println("\n                          Jogadores criados com sucesso!\n");
 
-            // primeiro estou fazendo o geralzao e depois vou implementar a lógica de iniciar jogo / escolher quantos jogadores
-            //Pecas
+            Jogo novoJogo = jogoDAO.criarJogo(conexao);
+            verificarSeCriouUsandoGenerico(novoJogo, "Jogo");
+
+            // jogadores
+            List<Jogador> listaJogadores = criarJogadores(conexao, input, novoJogo);
+            System.out.println("Jogadores criados!");
+
+            // peças
             PecaDAO pecaDAO = new PecaDAO();
             pecaDAO.inicializarPecas(conexao);
-            List<Peca> listaDePecas = pecaDAO.listarTodasPecas(conexao);
-            System.out.println("\n                        " + listaDePecas.size() + " Pecas criadas com sucesso!\n");
+            List<Peca> todasPecas = pecaDAO.listarTodasPecas(conexao);
 
-            System.out.println("----------------------------------------------------------------------------------");
-            //Partidas
-            //antes de iniciar a partida ou na primeira partida teriamos que distribuir as cartas?
-            System.out.println("Iniciando partidas");
+            // partida
             PartidaDAO partidaDAO = new PartidaDAO();
-            Partida novaPartida = new Partida(novoJogo.getIdJogo());
-            partidaDAO.criarPartida(conexao, novaPartida);
+            Partida partida = new Partida(novoJogo.getIdJogo());
+            partidaDAO.criarPartida(conexao, partida);
+            verificarSeCriouUsandoGenerico(partida, "Partida");
 
-            if(verificarSeCriouUsandoGenerico(novaPartida, "Partida 1")){
-                MonteDAO monteDAO = new MonteDAO();
-                Monte novoMonte = new Monte(novaPartida.getIdPartida());
-                monteDAO.criarMonte(conexao, novoMonte);
-                System.out.println("\n                          Embaralhando e distribuindo!\n");
-                Collections.shuffle(listaDePecas);
-                //primeira jogada(ou a 0) onde é distribuido
-                JogadaDAO jogadaDAO = new JogadaDAO();
-                int indicePeca = 0;
-                System.out.println("\n                          Distribuindo 7 pecas para cada jogador!\n");
-                for(Jogador jogador : listaDeJogadores){
-                    for(int k=0; k<7; k++){
-                        Peca pecaUsada = listaDePecas.get(indicePeca);
-                        //È preciso salvar o registro
-                        Jogada distribuicao = new Jogada(0, novaPartida.getIdPartida(), jogador.getIdJogador(), 4, pecaUsada.getIdPeca(), null);
-                        jogadaDAO.criarJogada(conexao, distribuicao);
-                        indicePeca++;
-                    }
+            // monte
+            MonteDAO monteDAO = new MonteDAO();
+            Monte monte = new Monte(partida.getIdPartida());
+            monteDAO.criarMonte(conexao, monte);
+
+            // distribuir
+            Collections.shuffle(todasPecas);
+            JogadaDAO jogadaDAO = new JogadaDAO();
+            int idx = 0;
+
+            System.out.println("Distribuindo 7 peças para cada jogador...");
+
+            for (Jogador jogador : listaJogadores) {
+                for (int k = 0; k < 7; k++) {
+                    Peca p = todasPecas.get(idx);
+                    jogadaDAO.criarJogada(conexao,
+                            new Jogada(0, partida.getIdPartida(), jogador.getIdJogador(), 4, p.getIdPeca(), null));
+                    idx++;
                 }
-
-
-                System.out.println("                          Pecas distribuidas\n                          Pecas restantes no Monte: "+ (listaDePecas.size() - indicePeca));
             }
 
-        } catch(SQLException e){
-            System.out.println("Falha no banco de dados");
+            System.out.println("Distribuição feita.");
+            System.out.println("Peças restantes no monte: " + (todasPecas.size() - idx));
+
+            // achar o jogador que tem a peça 6-6
+            Jogador primeiro = acharQuemTemDouble6(conexao, partida);
+
+            if (primeiro == null) {
+                System.out.println("Ninguém recebeu o 6-6.");
+            } else {
+                System.out.println("Jogador que começa: Jogador " + primeiro.getIdJogador());
+                jogarDouble6(conexao, partida, primeiro);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro no banco:");
             e.printStackTrace();
         }
     }
-    public static List<Jogador> criarJogadores(Connection conexao, Scanner input, Jogo novoJogo) throws SQLException{
+
+    // ---------------------------- seus métodos ----------------------------
+
+    public static List<Jogador> criarJogadores(Connection conexao, Scanner input, Jogo novoJogo) throws SQLException {
         List<Jogador> listaDeJogadores = new ArrayList<>();
         int quantidadeJogadores = 0;
-        while(quantidadeJogadores < 2 || quantidadeJogadores >4){
+
+        while (quantidadeJogadores < 2 || quantidadeJogadores > 4) {
             System.out.println("Digite a quantidade de Jogadores: ");
-            try{
-                if(input.hasNextInt()){
+
+            try {
+                if (input.hasNextInt()) {
                     quantidadeJogadores = input.nextInt();
                     input.nextLine();
-                } else{
+                } else {
                     input.nextLine();
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 quantidadeJogadores = 0;
             }
-            if(quantidadeJogadores >4 || quantidadeJogadores < 2){
-                System.out.println("Valor inválido! Digite uma quantidade de jogadores de no minimo 2 e no maximo 4!");
+
+            if (quantidadeJogadores > 4 || quantidadeJogadores < 2) {
+                System.out.println("Valor inválido! Digite entre 2 e 4.");
             }
         }
 
         JogadorDAO jogadorDAO = new JogadorDAO();
-        System.out.println("Criando "+quantidadeJogadores+ " jogadores no jogo "+novoJogo);
-        for(int i=1; i<=quantidadeJogadores; i++){
-            Jogador objetoJogador = new Jogador(i, novoJogo.getIdJogo());
-            Jogador novoJogador = jogadorDAO.criarJogador(conexao, objetoJogador);
+        System.out.println("Criando " + quantidadeJogadores + " jogadores no jogo " + novoJogo);
+
+        for (int i = 1; i <= quantidadeJogadores; i++) {
+            Jogador objeto = new Jogador(i, novoJogo.getIdJogo());
+            Jogador novoJogador = jogadorDAO.criarJogador(conexao, objeto);
             verificarSeCriouUsandoGenerico(novoJogador, "Jogador" + i);
             listaDeJogadores.add(novoJogador);
         }
+
         return listaDeJogadores;
     }
-    //usando a objecti
-    public static void verificarSeCriou(Object objeto, String nomeTipo){
-        if(objeto!= null){
+
+    public static Jogador acharQuemTemDouble6(Connection c, Partida p) throws SQLException {
+        String sql = "select j.idjogador from domino.jogada jog "
+                + "join domino.jogador j on j.idjogador = jog.idjogador "
+                + "where jog.idpartida = ? and jog.acao = 4 "
+                + "and jog.idpeca = (select idpeca from domino.peca where valorLado1 = 6 and valorLado2 = 6 limit 1) "
+                + "limit 1";
+
+        PreparedStatement st = c.prepareStatement(sql);
+        st.setInt(1, p.getIdPartida());
+        ResultSet r = st.executeQuery();
+
+        if (r.next()) {
+            int id = r.getInt("idjogador");
+            return new Jogador(id, p.getIdJogo());
+        }
+
+        return null;
+    }
+
+    public static void jogarDouble6(Connection c, Partida p, Jogador j) throws SQLException {
+        String q = "select idpeca from domino.peca where valorLado1 = 6 and valorLado2 = 6 limit 1";
+        PreparedStatement st = c.prepareStatement(q);
+        ResultSet r = st.executeQuery();
+
+        int idPeca = -1;
+        if (r.next()) {
+            idPeca = r.getInt("idpeca");
+        }
+
+        if (idPeca == -1) {
+            System.out.println("não achei a peca 6-6");
+            return;
+        }
+
+        String ins = "insert into domino.jogada (ordem, idpartida, idjogador, acao, idpeca) "
+                + "values ((select coalesce(max(ordem),0)+1 from domino.jogada where idpartida=?), ?, ?, 1, ?)";
+
+        PreparedStatement st2 = c.prepareStatement(ins);
+        st2.setInt(1, p.getIdPartida());
+        st2.setInt(2, p.getIdPartida());
+        st2.setInt(3, j.getIdJogador());
+        st2.setInt(4, idPeca);
+        st2.executeUpdate();
+
+        System.out.println("Jogador " + j.getIdJogador() + " jogou o 6-6 e começou o jogo.");
+    }
+
+    public static void verificarSeCriou(Object objeto, String nomeTipo) {
+        if (objeto != null) {
             System.out.println(nomeTipo + " criado com sucesso!");
-            System.out.println("Detalhes do "+ nomeTipo + ": "+ objeto);
-        } else{
+            System.out.println("Detalhes do " + nomeTipo + ": " + objeto);
+        } else {
             System.out.println("ERRO: retornou NULL");
         }
     }
-    //Criar objetos
 
-    //usando metodo generico(solicitado para LPOO)
-    public static <T> boolean verificarSeCriouUsandoGenerico( T objeto, String nomeTipo){
-        if(objeto != null){
-            System.out.println("---------------------------"+nomeTipo + " criado com sucesso!"+"-------------------------------");
-            System.out.println("Detalhes do "+ nomeTipo + ": "+ objeto);
+    public static <T> boolean verificarSeCriouUsandoGenerico(T objeto, String nomeTipo) {
+        if (objeto != null) {
+            System.out.println("---------------------------" + nomeTipo + " criado com sucesso!" + "-------------------------------");
+            System.out.println("Detalhes do " + nomeTipo + ": " + objeto);
             return true;
-        }else{
+        } else {
             System.out.println("ERRO: retornou NULL");
             return false;
         }
     }
 }
-/*Details:
-Programmer: Lorran
-Date: 09/11 (first version)
- */
