@@ -51,6 +51,37 @@ public class JogadaDAO {
             cs.execute();
         }
     }
+    public java.util.List<modeloTabelas.Peca> buscarMaoDoJogador(Connection conexao, int idPartida, int idJogador) throws SQLException {
+        java.util.List<modeloTabelas.Peca> mao = new java.util.ArrayList<>();
+        String sql = """
+            SELECT p.* FROM domino.peca p
+            JOIN domino.jogada j ON j.idpeca = p.idpeca
+            WHERE j.idpartida = ? AND j.idjogador = ?
+              AND j.acao IN (2, 4) 
+              AND NOT EXISTS (
+                  SELECT 1 FROM domino.jogada j2 
+                  WHERE j2.idpeca = p.idpeca 
+                    AND j2.idpartida = j.idpartida 
+                    AND j2.acao = 1 
+              )
+            ORDER BY p.idpeca
+        """;
+        try(PreparedStatement stmt = conexao.prepareStatement(sql)){
+            stmt.setInt(1, idPartida);
+            stmt.setInt(2, idJogador);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                modeloTabelas.Peca p = new modeloTabelas.Peca(
+                        rs.getInt("idpeca"),
+                        rs.getInt("valorlado1"),
+                        rs.getInt("valorlado2")
+                );
+                mao.add(p);
+            }
+        }
+        return mao;
+    }
 }
 /*Details:
 Programmer: Sergio

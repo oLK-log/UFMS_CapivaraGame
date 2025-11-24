@@ -1,6 +1,8 @@
 package dao;
 import modeloTabelas.Jogador;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JogadorDAO {
     public Jogador criarJogador(Connection conexao, Jogador jogador) throws SQLException {
@@ -20,6 +22,7 @@ public class JogadorDAO {
         return null;
     }
 }
+
 /*Details:
 Programmer: Lorran
 Date: 09/11 (first version)
