@@ -108,6 +108,39 @@ public class Main {
                         System.out.println("Erro ao registrar jogada" + e.getMessage());
                     }
                 }
+
+                //Jogadas
+                int pontaEsquedaMesa = 6;
+                int pontaDiretaMesa = 6;
+
+                int posJogadorAtual = -1;
+                for(int i=0; i<listaDeJogadores.size(); i++){
+                    if(listaDeJogadores.get(i).getIdJogador() == idJogadorQueComeca){
+                        posJogadorAtual = i;
+                        break;
+                    }
+                }
+                posJogadorAtual = (posJogadorAtual + 1) % listaDeJogadores.size();
+                boolean jogoAcabou = false;
+
+                System.out.println("\nINICIANDO JOGADAS!!!\n");
+                while(!jogoAcabou){
+                    Jogador jogadorDaVez = listaDeJogadores.get(posJogadorAtual);
+                    System.out.println("Mesa atual: "+ pontaEsquedaMesa + " - "+ pontaDiretaMesa);
+                    System.out.println("Vez do Jogador "+ jogadorDaVez.getIdJogador() + " da posicao "+ jogadorDaVez.getPosicao());
+
+                    JogadaDAO jogadaDaoLoop = new JogadaDAO();
+
+                    List<Peca> maoDoJogador = jogadaDaoLoop.buscarMaoDoJogador(conexao, novaPartida.getIdPartida(), jogadorDaVez.getIdJogador());
+                    System.out.println("Sua mão: ");
+                    for(int i=0; i<maoDoJogador.size(); i++){
+                        System.out.println(i + " = " + maoDoJogador.get(i));
+                    }
+
+                    System.out.println("Passando a vez");
+                    posJogadorAtual = (posJogadorAtual + 1) % listaDeJogadores.size();
+                    break;
+                }
             }
 
         } catch(SQLException e){
