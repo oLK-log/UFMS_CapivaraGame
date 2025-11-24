@@ -35,8 +35,26 @@ public class JogadaDAO {
         }
         return null;
     }
+    public void jogarPeca(Connection conexao, int idPartida, int idJogador, int idPeca, int lado, Integer pontaMesa) throws SQLException {
+        String sql = "CALL domino.validar_jogada(?, ?, ?, ?, ?)";
+        try (CallableStatement cs = conexao.prepareCall(sql)) {
+            cs.setInt(1, idPartida);
+            cs.setInt(2, idJogador);
+            cs.setInt(3, idPeca);
+            cs.setInt(4, lado);
+
+            if(pontaMesa == null){
+                cs.setNull(5, Types.INTEGER);
+            }else{
+                cs.setInt(5, pontaMesa);
+            }
+            cs.execute();
+        }
+    }
 }
 /*Details:
 Programmer: Sergio
 Date: 18/11 (first version)
+Programmer: Lorran
+Date : 23/11 (second version)
  */

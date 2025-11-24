@@ -1,19 +1,7 @@
 package org.example;
-import dao.JogadorDAO;
-import dao.JogoDAO;
-import dao.PartidaDAO;
-import dao.PecaDAO;
-import dao.DuplaDAO;
-import dao.MonteDAO;
-import dao.JogadaDAO;
+import dao.*;
 
-import modeloTabelas.Jogador;
-import modeloTabelas.Jogo;
-import modeloTabelas.Partida;
-import modeloTabelas.Peca;
-import modeloTabelas.Dupla;
-import modeloTabelas.Monte;
-import modeloTabelas.Jogada;
+import modeloTabelas.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -91,19 +79,35 @@ public class Main {
                 //primeira jogada(ou a 0) onde é distribuido
                 JogadaDAO jogadaDAO = new JogadaDAO();
                 int indicePeca = 0;
+                int idJogadorQueComeca = -1;
+                int idPecaB = -1;
+
+
                 System.out.println("\n                          Distribuindo 7 pecas para cada jogador!\n");
                 for(Jogador jogador : listaDeJogadores){
                     for(int k=0; k<7; k++){
                         Peca pecaUsada = listaDePecas.get(indicePeca);
+                        //logica para peca 6-6
+                        if(pecaUsada.getValorLado1() == 6 && pecaUsada.getValorLado2() == 6){
+                            idJogadorQueComeca = jogador.getIdJogador();
+                            idPecaB = pecaUsada.getIdPeca();
+                            System.out.println("\n                          A peca 6-6 está com " + jogador.getIdJogador()+"!");
+                        }
                         //È preciso salvar o registro
                         Jogada distribuicao = new Jogada(0, novaPartida.getIdPartida(), jogador.getIdJogador(), 4, pecaUsada.getIdPeca(), null);
                         jogadaDAO.criarJogada(conexao, distribuicao);
                         indicePeca++;
                     }
                 }
-
-
                 System.out.println("                          Pecas distribuidas\n                          Pecas restantes no Monte: "+ (listaDePecas.size() - indicePeca));
+                if(idJogadorQueComeca != -1 && idPecaB != -1){
+                    System.out.println("Jogador "+idJogadorQueComeca+" comeca a partida");
+                    try{
+                        jogadaDAO.jogarPeca(conexao, novaPartida.getIdPartida(), idJogadorQueComeca, idPecaB, 6, null);
+                    }catch(SQLException e){
+                        System.out.println("Erro ao registrar jogada" + e.getMessage());
+                    }
+                }
             }
 
         } catch(SQLException e){
